@@ -8,7 +8,6 @@
 //         ->sum();
 //     //$total = Session::get('user')['cart_total'];
 // }
-
 $total = 0;
 
 if (auth()->check()) {
@@ -28,7 +27,6 @@ if (auth()->check()) {
     //$total = session(['cart' => $totalQuantity]);
 }
 ?>
-
 @if (session('message'))
     <div>{{ session('message') }}</div>
 @endif
@@ -174,7 +172,7 @@ if (auth()->check()) {
         <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
                 <a href="index.html" class="navbar-brand">
-                    <h1 class="text-primary display-6">Shopping</h1>
+                    <h1 class="text-primary display-6">Fruitables</h1>
                 </a>
                 <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarCollapse">
@@ -286,13 +284,13 @@ if (auth()->check()) {
                         </a> --}}
                         <a href="{{ route('clearlist') }}" class="position-relative me-4 my-auto">
                             <i class="fa fa-shopping-bag fa-2x"></i>
-                            <span id="shop_count"
+                            <span
                                 class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
                                 style="top: -5px; left: 15px; height: 20px; min-width: 20px;">{{ $total }}</span>
                         </a>
 
                         <!-- User Dropdown or Login Button -->
-                        {{-- @if (Session::has('user'))
+                        @if (Session::has('user'))
                             <div class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"
                                     aria-expanded="false">
@@ -311,33 +309,12 @@ if (auth()->check()) {
                             </div>
                         @else
                             <a href="/login" class="btn btn-primary">Login</a>
-                        @endif --}}
-
-                        @if (Auth::check())
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                {{ Auth::user()->name }}
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fa fa-sign-out"></i> Log Out
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    @else
-                        <a href="{{ route('login') }}" class="fas fa-user fa-2x"></a>
-                    @endif
+                        @endif
 
                         <!-- User Icon -->
-                        {{-- <a href="" class="my-auto">
+                        <a href="#" class="my-auto">
                             <i class="fas fa-user fa-2x"></i>
-                        </a> --}}
+                        </a>
                     </div>
 
 
@@ -478,7 +455,7 @@ if (auth()->check()) {
             <div class="tab-class text-center">
                 <div class="row g-4">
                     <div class="col-lg-4 text-start">
-                        <h1>Products Details</h1>
+                        <h1>Our Organic Products</h1>
                     </div>
                     <div class="col-lg-8 text-end">
                         <ul class="nav nav-pills d-inline-flex text-center mb-5">
@@ -535,9 +512,9 @@ if (auth()->check()) {
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                                     <h4>{{ $product->desc }}</h4>
                                                     <p>Available Quantity:</p>
-                                                      <p>{{ $product->qty }}</p>
+                                                    <p>{{ $product->qty }}</p>
                                                     <div class="d-flex justify-content-between flex-lg-wrap">
-                                                        <p class="text-dark fs-5 fw-bold mb-0">{{ $product->price }}
+                                                        <p class="text-dark fs-5 fw-bold mb-0">${{ $product->price }}
                                                         </p>
                                                     </div>
                                                     <div class="product-card">
@@ -545,14 +522,12 @@ if (auth()->check()) {
                                                         @php
                                                             $cartItemIds = session()->get('cart', []); // Get the cart or an empty array
                                                             $cartItemIds = collect($cartItemIds)
-                                                            ->keyBy('prodid')
-                                                           
-                                                            ->toArray(); // Convert to collection and pluck 'prodid'
-                                                            //dd($cartItemIds);
-                                                            @endphp
+                                                                ->pluck('prodid')
+                                                                ->toArray(); // Convert to collection and pluck 'prodid'
+                                                            // dd($cartItemIds);
+                                                        @endphp
                                                         {{-- @dd($cartItemIds); --}}
-                                                        {{-- @if (in_array($product->id, $cartItemIds)) --}}
-                                                        @if (array_key_exists($product->id, $cartItemIds))
+                                                        @if (in_array($product->id, $cartItemIds))
                                                             {{-- @dd($product->id); --}}
                                                             <div class="d-flex align-items-center"
                                                                 id="buttons-{{ $product->id }}">
@@ -563,7 +538,7 @@ if (auth()->check()) {
                                                                 <!-- Quantity Input -->
                                                                 <input type="text"
                                                                     class="form-control qty-input mx-2"
-                                                                    id="qty-{{ $product->id }}" value="{{ $cartItemIds[$product->id]['quantity'] ?? 1 }}"
+                                                                    id="qty-{{ $product->id }}" value="1"
                                                                     min="1"
                                                                     style="width: 60px; text-align: center;">
                                                                 <!-- Increment Button -->
@@ -1029,11 +1004,124 @@ if (auth()->check()) {
 
 {{-- ajax crud --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{{-- <script>
+    $(document).ready(function() {
+        $('.add-to-cart').on('click', function(e) {
+            // $.ajaxSetup({
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //     }
+            // });
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            //alert('hi');
+            e.preventDefault(); // Prevent the form from refreshing the page
+            //   alert('hi');
+            $.ajax({
+                // alert('hi');
+                url: "{{route('addtocart')}}", // Replace with your route name or URL
+                method: "POST",
+                data: $(this).serialize(),
+                success: function(response) {
+                    $('#responseMessage').text(response.message);
+                },
+                error: function(xhr, status, error) {
+                    let errorMessage = xhr.responseJSON.message || 'An error occurred.';
+                    $('#responseMessage').css('color', 'red').text(errorMessage);
+                }
+            });
+            //alert('hi');
+        });
+    });
+</script> --}}
+{{-- <script>
+    $('.add-to-cart').on('click', function(e) {
+        e.preventDefault();
+        const productId = $(this).data('product-id');
+
+        $.ajax({
+            url: "{{ route('addtocart') }}",
+            method: "POST",
+            data: {
+                product_id: productId,
+                quantity: 1
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+
+                $('#responseMessage').text(response.message).css('color', 'green');
+                $(`#add-to-cart-btn-${productId}`).hide();
+
+                // Show the increment/decrement buttons
+                $(`#product-controls-${productId}`).html(`
+    <div class="d-flex align-items-center">
+        <button class="btn btn-outline-danger btn-sm decrease-qty" data-id="${productId}">-</button>
+        <input type="text" class="form-control qty-input mx-2" id="qty-${productId}" value="1" min="1" style="width: 60px; text-align: center;">
+        <button class="btn btn-outline-success btn-sm increase-qty" data-id="${productId}">+</button>
+    </div>
+   `);
+
+
+            },
+            error: function(xhr) {
+                const errorMessage = xhr.responseJSON?.message || 'An error occurred.';
+                $('#responseMessage').css('color', 'red').text(errorMessage);
+            }
+        });
+    });
+</script> --}}
+
+{{-- <script>
+    $(document).on('click', '.add-to-cart', function(e) {
+        e.preventDefault();
+        const productId = $(this).data('product-id');
+        // alert('hi');
+
+        $.ajax({
+            url: "{{ route('addtocart') }}",
+            method: "POST",
+            data: {
+                product_id: productId,
+                quantity: 1
+            },
+            //alert('hi');
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                // Hide the "Add to Cart" button
+                $(`#add-to-cart-btn-${productId}`).hide();
+
+                // Show increment/decrement controls
+                $(`#product-controls-${productId}`).html(`
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-outline-danger btn-sm decrease-qty" data-id="${productId}">-</button>
+                    <input type="text" class="form-control qty-input mx-2" id="qty-${productId}" value="1" min="1" style="width: 60px; text-align: center;">
+                    <button class="btn btn-outline-success btn-sm increase-qty" data-id="${productId}">+</button>
+                </div>
+            `);
+                $('#responseMessage').text(response.message).css('color', 'green');
+            },
+            error: function(xhr) {
+                const errorMessage = xhr.responseJSON?.message || 'An error occurred.';
+                $('#responseMessage').css('color', 'red').text(errorMessage);
+            }
+        });
+    });
+</script> --}}
+
+{{-- addtobutton --}}
 <script>
     $(document).ready(function() {
         // Add to Cart button click event
-        $(document).on('click', '.add-to-cart', function(e){
-            e.preventDefault();            
+        $(document).on('click', '.add-to-cart', function(e) {
+            e.preventDefault();
             const productId = $(this).data('product-id');
 
             // alert('Product');
@@ -1069,25 +1157,25 @@ if (auth()->check()) {
         });
 
         // Increment quantity
-        // $(document).on('click', '.increase-qty', function() {
-        //     const productId = $(this).data('id');
-        //     const qtyInput = $(`#qty-${productId}`);
-        //     qtyInput.val(parseInt(qtyInput.val() || 1) + 1);
-        // });
+        $(document).on('click', '.increase-qty', function() {
+            const productId = $(this).data('id');
+            const qtyInput = $(`#qty-${productId}`);
+            qtyInput.val(parseInt(qtyInput.val() || 1) + 1);
+        });
 
-        // // Decrement quantity
-        // $(document).on('click', '.decrease-qty', function() {
-        //     const productId = $(this).data('id');
-        //     const qtyInput = $(`#qty-${productId}`);
-        //     let currentQty = parseInt(qtyInput.val() || 1);
-        //     if (currentQty > 1) {
-        //         qtyInput.val(currentQty - 1);
-        //     } else {
-        //         // Revert to "Add to Cart" button
-        //         $(`#add-to-cart-btn-${productId}`).show();
-        //         $(`#product-controls-${productId}`).empty();
-        //     }
-        // });
+        // Decrement quantity
+        $(document).on('click', '.decrease-qty', function() {
+            const productId = $(this).data('id');
+            const qtyInput = $(`#qty-${productId}`);
+            let currentQty = parseInt(qtyInput.val() || 1);
+            if (currentQty > 1) {
+                qtyInput.val(currentQty - 1);
+            } else {
+                // Revert to "Add to Cart" button
+                $(`#add-to-cart-btn-${productId}`).show();
+                $(`#product-controls-${productId}`).empty();
+            }
+        });
     });
 </script>
 
@@ -1097,7 +1185,7 @@ if (auth()->check()) {
         const productId = $(this).data('id');
 
         $.ajax({
-            url: "{{ route('cart.increment_new') }}",
+            url: "{{ route('cart.increment') }}",
             method: "POST",
             data: {
                 prodid: productId
@@ -1106,9 +1194,7 @@ if (auth()->check()) {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                console.log(response);
                 $(`#qty-${productId}`).val(response.new_quantity);
-                $('#shop_count').text(response.total);
             },
             error: function(xhr) {
                 alert('Error: ' + xhr.responseJSON.message);
@@ -1120,7 +1206,7 @@ if (auth()->check()) {
         const productId = $(this).data('id');
 
         $.ajax({
-            url: "{{ route('cart.decrement_new') }}",
+            url: "{{ route('cart.decrement') }}",
             method: "POST",
             data: {
                 prodid: productId
@@ -1131,7 +1217,6 @@ if (auth()->check()) {
             success: function(response) {
                 if (response.new_quantity > 0) {
                     $(`#qty-${productId}`).val(response.new_quantity);
-                    $('#shop_count').text(response.total);
                 } else {
                     $(`#add-to-cart-btn-${productId}`).show();
                     $(`#product-controls-${productId}`).empty();

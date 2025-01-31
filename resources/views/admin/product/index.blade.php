@@ -39,6 +39,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {{-- @dd($products) --}}
                                         @foreach ($products as $product)
                                             <tr>
                                                 <td>{{$product->id}}</td>
@@ -47,18 +48,19 @@
                                                 <td>{{$product->price}}</td>
                                                 <td>{{$product->qty}}</td>
                                                 {{-- <td>{{$product->image}}</td> --}}
-
                                                 
-                                                <td><img src="{{asset('product_images/'.$product->image)}}" alt="" height="100"></td>
-                                                  {{-- <td><img src="{{asset($product->image)}}" alt="" height="100">  </td> --}}
+                                                {{-- @dd($product) --}}
+                                                <td>
+                                                    <img src="{{asset('product_images/'.$product->image)}}" alt="" height="100">
+                                                </td>
+                                                {{-- <td>  <img src="{{asset($product->image)}}" alt="" height="100">  </td> --}}
                                                  {{-- <td> <img src="{{ $product->image ? asset($product->image) : asset('image/placeholder.png') }}" alt="" height="100"></td> --}}
 
                                                   {{-- @dd($product->image) --}}
                                                 <td>
-                                                    <a href="{{url('edit-user',$product->id)}}" class="btn btn-warning">Edit</a>
-                                                    <a href="{{url('delete-user',$product->id)}}" class="btn btn-danger">Delete</a>
+                                                    <a href="{{url('edit-product',$product->id)}}" class="btn btn-warning">Edit</a>
+                                                    <a href="{{url('delete-product',$product->id)}}" class="btn btn-danger">Delete</a>
                                                 </td>
-
                                             </tr>
                                         @endforeach
                                     </tbody>

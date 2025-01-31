@@ -51,20 +51,8 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $image = time() . '.' . $request->image->getClientOriginalName();
             $request->image->move(public_path('product_images'), $image);
-            $prod->image = $image;
-            // $prod->image = 'product_images/' .$image;
+            $prod->image = 'product_images/' .$image;
         }
-        // if ($request->hasFile('image')) {
-        //     // Generate a unique name for the image
-        //     $imageName = time() . '.' . $request->image->getClientOriginalExtension();
-
-        //     // Move the uploaded file to the public/product_images directory
-        //     $request->image->move(public_path('product_images'), $imageName);
-
-        //     // Save the file path in the database
-        //     $prod->image = 'product_images/' . $imageName;
-        // }
-
 
         // dd($prod);
 
@@ -384,11 +372,11 @@ class ProductController extends Controller
         //  dd(1);
         $userId = Auth::id();
         //$userId = Session::get('users')['id'];
-        // dd($userId);
+         // dd($userId);
         if ($userId) {
             $datas = DB::table('cart')
                 ->join('products', 'cart.prodid', '=', 'products.id')
-                ->select('products.id as prodid', 'products.name', 'products.desc', 'products.image', 'products.price', 'cart.quantity', 'cart.id as cartid') // Add more fields as needed
+                ->select('products.id as prodid', 'products.name', 'products.desc','products.image', 'products.price', 'cart.quantity','cart.id as cartid') // Add more fields as needed
                 ->where('cart.userid', $userId)
                 ->get();
         } else {
@@ -675,7 +663,7 @@ class ProductController extends Controller
         }
 
         foreach ($cartItems as $cart) {
-
+             
             // dd($cart);
             // Create a new Order
             $order = new Order();
@@ -710,7 +698,7 @@ class ProductController extends Controller
         $cart = Cart::find($id);
         //  $cart = Cart::findOrFail($id);
         // dd($cart);
-        $cart->delete(); // Soft delete the record
+         $cart->delete(); // Soft delete the record
         //$cart = Cart::withTrashed()->find($id);
         //dd($id);
 
@@ -733,12 +721,12 @@ class ProductController extends Controller
         //dd($id);
         // $cart = Cart::where('userid', Auth::id())->where('id', $id)->first();
         // $cart = Cart::find($id);         // $cart->where('userid', Auth::id())->
-        //$cart = Cart::find((int)$id);
-        // $cart->where('userid', Auth::id());
+      //$cart = Cart::find((int)$id);
+     // $cart->where('userid', Auth::id());
         //dd(gettype($id));   
         //$cart = Cart::where('id', $id)->firstOrFail();
         // $cart = Cart::find($request->id);
-        //   dd($cart);
+    //   dd($cart);
         //  $cart->delete();
         //dd($cart);
         // return redirect()->route('cartlist')->with('success', 'Cart Item deleted successfully!');
@@ -838,68 +826,22 @@ class ProductController extends Controller
         session(['cart' => $updatedCart]);
         return redirect()->back()->with('message', 'Session data cleared successfully.');
     }
-    
     public function increment(Request $request)
     {
+        $productId = $request->input('prodid');
+        $cart = session('cart', []);
 
-         //dd($request);
-        if (Auth::check()) {
-
-            //$productId = $request->input('id');
-           
-           // $cart = Cart::where('userid', Auth::id())->where('id', $request->id)->first();
-
-              $cart = Cart::find($request->prodid);
-           // $cart = Cart::where ();
-            //  dd($request->prodid);
-            //    dd($cart);
-            if ($cart) {
-               // dd($cart);
-                $cart->quantity += 1;
-                $cart->save();
-            }
-            //  dd($cart);
-            return response()->json([
-                'success' => true,
-                'quantity' => $cart->quantity,
-                'message' => 'Quantity updated in database'
-            ]);
-        } else {
-
-            $productId = $request->input('prodid');
-            // dd($productId);
-            $cart = session('cart', []);
-
-            if (isset($cart[$productId])) {
-                $cart[$productId]['quantity'] += 1; // Increment quantity
-            }
-
-            session(['cart' => $cart]); // Update session
-            return response()->json(['success' => true, 'cart' => $cart]);
+        if (isset($cart[$productId])) {
+            $cart[$productId]['quantity'] += 1; // Increment quantity
         }
+
+        session(['cart' => $cart]); // Update session
+        return response()->json(['success' => true, 'cart' => $cart]);
     }
 
     // Decrement the quantity of a product in the session
     public function decrement(Request $request)
     {
-      
-        if (Auth::check()) {
-            // Find the cart item for the logged-in user
-            $cart = Cart::where('userid', Auth::id())->where('id', $request->prodid)->first();
-            //  dd($cart);
-    
-            if ($cart && $cart->quantity > 1) {
-                $cart->quantity -= 1;
-                $cart->save();
-    
-                return response()->json([
-                    'success' => true,
-                    'quantity' => $cart->quantity,
-                    'message' => 'Quantity updated in database'
-                ]);
-            }
-        }else{
-
         $productId = $request->input('prodid');
         // dd($productId);
         $cart = session('cart', []);
@@ -912,9 +854,6 @@ class ProductController extends Controller
 
         session(['cart' => $cart]); // Update session
         return response()->json(['success' => true, 'cart' => $cart]);
-
-    }
-
     }
     // public function incrementSession(Request $request)
     // {

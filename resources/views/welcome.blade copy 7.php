@@ -174,7 +174,7 @@ if (auth()->check()) {
         <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
                 <a href="index.html" class="navbar-brand">
-                    <h1 class="text-primary display-6">Shopping</h1>
+                    <h1 class="text-primary display-6">Fruitables</h1>
                 </a>
                 <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarCollapse">
@@ -292,7 +292,7 @@ if (auth()->check()) {
                         </a>
 
                         <!-- User Dropdown or Login Button -->
-                        {{-- @if (Session::has('user'))
+                        @if (Session::has('user'))
                             <div class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"
                                     aria-expanded="false">
@@ -311,33 +311,12 @@ if (auth()->check()) {
                             </div>
                         @else
                             <a href="/login" class="btn btn-primary">Login</a>
-                        @endif --}}
-
-                        @if (Auth::check())
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                {{ Auth::user()->name }}
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fa fa-sign-out"></i> Log Out
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    @else
-                        <a href="{{ route('login') }}" class="fas fa-user fa-2x"></a>
-                    @endif
+                        @endif
 
                         <!-- User Icon -->
-                        {{-- <a href="" class="my-auto">
+                        <a href="#" class="my-auto">
                             <i class="fas fa-user fa-2x"></i>
-                        </a> --}}
+                        </a>
                     </div>
 
 
@@ -478,7 +457,7 @@ if (auth()->check()) {
             <div class="tab-class text-center">
                 <div class="row g-4">
                     <div class="col-lg-4 text-start">
-                        <h1>Products Details</h1>
+                        <h1>Our Organic Products</h1>
                     </div>
                     <div class="col-lg-8 text-end">
                         <ul class="nav nav-pills d-inline-flex text-center mb-5">
@@ -535,9 +514,9 @@ if (auth()->check()) {
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                                     <h4>{{ $product->desc }}</h4>
                                                     <p>Available Quantity:</p>
-                                                      <p>{{ $product->qty }}</p>
+                                                    <p>{{ $product->qty }}</p>
                                                     <div class="d-flex justify-content-between flex-lg-wrap">
-                                                        <p class="text-dark fs-5 fw-bold mb-0">{{ $product->price }}
+                                                        <p class="text-dark fs-5 fw-bold mb-0">${{ $product->price }}
                                                         </p>
                                                     </div>
                                                     <div class="product-card">

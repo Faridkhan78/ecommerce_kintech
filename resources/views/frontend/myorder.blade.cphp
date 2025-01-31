@@ -1,0 +1,91 @@
+@include('frontend.header')
+<!-- Cart Page Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="table-responsive">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Products</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Handle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach ($total as $data)
+                            {{-- @dd($data)                    --}}
+
+                            <tr>
+                                <th scope="row">
+                                    <div class="d-flex align-items-center">
+                                        {{-- <img src="{{ asset('user/img/vegetable-item-3.png') }}" --}}
+                                        <img src="{{ asset('product_images/' . $data->image) }}"
+                                            class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;"
+                                            alt="">
+                                    </div>
+                                </th>
+                                <td>
+                                    <p class="mb-0 mt-4">{{ $data->name }}</p>
+                                </td>
+                                <td>
+                                    <p class="mb-0 mt-4">{{ $data->price }}</p>
+                                </td>
+                                <td>
+                                    <div class="input-group quantity mt-4" style="width: 100px;">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-minus rounded-circle bg-light border">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm text-center border-0"
+                                            value="{{ $data->quantity }}">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    
+
+                                  
+                                    <p class="mb-0 mt-4">totalPrice</p>
+                                </td>
+                                <form method="post" action="{{route('delete_cartlist',$data->id) }}">
+                                {{-- <form> --}}
+                                    @csrf
+                                    @method('DELETE') <!-- Spoof DELETE method -->
+                                    <td>
+                                        <button type="submit" class="btn btn-md rounded-circle bg-light border mt-4">
+                                            <i class="fa fa-times text-danger"></i>
+                                        </button>
+                                    </td>
+                                </form>
+                               
+
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+
+
+        </div>
+        <div class="mt-5">
+            <input type="text" class="border-0 border-bottom rounded me-5 py-3 mb-4" placeholder="Coupon Code">
+            <button class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">Apply
+                Coupon
+            </button>
+        </div>
+        
+    </div>
+</div>
+<!-- Cart Page End -->
+
+@include('frontend.footer')

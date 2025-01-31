@@ -160,28 +160,21 @@
                             <td>
                                 <p class="mb-0 mt-4">{{ $data->price }}</p>
                             </td> 
-                            {{-- @dd($data) --}}
                             <td>
                                 <div class="input-group quantity mt-4" style="width: 100px;">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-minus rounded-circle bg-light border"
-                                         onclick="decrementSession({{ $data->cartid }})"
-                                        >
+                                        <button class="btn btn-sm btn-minus rounded-circle bg-light border">
                                             <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    {{-- @dd($data) --}}
                                     <input type="text"
                                         class="form-control form-control-sm text-center border-0"
                                         id="quantity-{{ $data->prodid}}" 
                                         value="{{$data->quantity}}">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-plus rounded-circle bg-light border"
-                                         onclick="incrementSession({{ $data->cartid}})"
-                                        >
+                                        <button class="btn btn-sm btn-plus rounded-circle bg-light border">
                                             <i class="fa fa-plus"></i>
                                         </button>
-                                        {{-- @dd($data->prodid) --}}
                                     </div>
                                 </div>
                             </td> 
@@ -194,22 +187,18 @@
                                  <p class="mb-0 mt-4">{{ $totalPrice }}</p>
                             </td>
                                                         
-                             <form method="post" action="{{ route('delete_cartlist',$data->cartid)}}"> 
+                             <form method="post" action="{{ route('delete_cartlist', $data->prodid)}}"> 
                                 {{-- <form>  --}}
                                   @csrf
                                  @method('DELETE') <!-- Spoof DELETE method --> 
                                 <td>
-                                     <button type="submit"
+                                    <button type="submit"
                                         class="btn btn-md rounded-circle bg-light border mt-4">
                                         <i class="fa fa-times text-danger"></i>
-                                    </button> 
-                                    {{-- <a href="{{ route('delete_cartlist',['id'=>$data->prodid])}}"class="btn btn-danger" >x</a> --}}
+                                    </button>
                                 </td>   
                               </form>  
-                              {{-- @dd($data->cartid)  --}}
-                              {{-- @dd($data->prodid)         --}}
-
-                               {{-- <form method="post" action="">
+                              {{-- <form method="post" action="">
                             <td>
                                 <button class="btn btn-md rounded-circle bg-light border mt-4" >
                                     <i class="fa fa-times text-danger"></i>
@@ -264,7 +253,7 @@
     </div>
 </div>
 
-<!--  Cart sesstion Page End -->
+<!-- Cart Page End -->
 @include('frontend.footer')
 <script>
 function incrementSession(prodid) {
@@ -304,63 +293,3 @@ function decrementSession(prodid) {
 }
 
 </script>
-{{-- login  --}}
-{{-- <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // CSRF Token
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-    
-        // Increment quantity
-        document.querySelectorAll(".btn-plus").forEach(button => {
-            button.addEventListener("click", function () {
-                const prodId = this.dataset.prodid;
-    
-                fetch("{{ route('quantity.increment_l') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrfToken
-                    },
-                    body: JSON.stringify({ prodid: prodId })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.getElementById(`quantity-${prodId}`).value = data.quantity;
-                        } else {
-                            alert(data.message || "Error incrementing quantity");
-                        }
-                    })
-                    .catch(error => console.error("Error:", error));
-            });
-        });
-    
-        // Decrement quantity
-        document.querySelectorAll(".btn-minus").forEach(button => {
-            button.addEventListener("click", function () {
-                const prodId = this.dataset.prodid;
-    
-                fetch("{{ route('quantity.decrement_l') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrfToken
-                    },
-                    body: JSON.stringify({ prodid: prodId })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.getElementById(`quantity-${prodId}`).value = data.quantity;
-                        } else {
-                            alert(data.message || "Error decrementing quantity");
-                        }
-                    })
-                    .catch(error => console.error("Error:", error));
-            });
-        });
-    });
-
-</script> --}}
-
-    
