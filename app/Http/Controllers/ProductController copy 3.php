@@ -93,7 +93,7 @@ class ProductController extends Controller
      */
     public function edit_product(string $id)
     {
-
+        
         $product = Product::find($id);
         return view('admin.product.edit', compact('product'));
     }
@@ -167,31 +167,31 @@ class ProductController extends Controller
     // }
     public function addToCart(Request $request)
     {
-        //  dd(1);
-
+        // dd(1);
         try {
             // dd($request->all());
             $productId = $request->input('product_id');
             //$productId = $request->prodid;
 
-            //  dd($productId);
+            //dd($productId);
 
-            $quantity = $request->input('quantity');
+            $quantity = $request->input('quantity', 1);
             // dd($quantity);      //  1
             if (Auth::check()) {
 
                 $userId = Auth::id();
-                // dd($userId);
+                //dd($userId);
                 $cartItem = Cart::where('userid', $userId)
                     ->where('prodid', $productId)
                     ->first();
-                // dd($cartItem);
+                //dd($cartItem);
 
                 if ($cartItem) {
+
                     //$cartItem->quantity += $quantity;
 
                     //dd($cartItem);
-                     
+
                     // if($cartItem->quantity += $quantity){
                     //     // Decrement quantity
                     //    // $cartItem->quantity -= 1;
@@ -216,18 +216,9 @@ class ProductController extends Controller
                     // if ($request->has($cartItem->quantity += $quantity)) {
 
                     if ($cartItem->quantity += $quantity) {
-                        // $cartItem->quantity += $quantity; // Increase quantity by $quantity
+                        $cartItem->quantity += $quantity; // Increase quantity by $quantity
                         $cartItem->save(); // Save the updated quantity
-                        $total = Cart::where('userId', auth()->user()->id)->sum('quantity');
-                        // dd($total);
-                        // $total = Cart::where('userId', auth()->id)->sum('quantity');
-                        // dd($total);
-                        return response()->json([
-                            'message' => 'Quantity updated',
-                            'new_quantity' => $cartItem->quantity,
-                            'total' => $total
-                        ]);
-                        // return response()->json(['message' => 'Quantity increased', 'new_quantity' => $cartItem->quantity]);
+                        return response()->json(['message' => 'Quantity increased', 'new_quantity' => $cartItem->quantity]);
                     }
 
                     // if ($request->has('decrement')) {
@@ -244,8 +235,11 @@ class ProductController extends Controller
                 } else {
 
                     Cart::create([
+
                         'userid' => $userId,
+
                         'prodid' => $productId,
+
                         'quantity' => $quantity,
                     ]);
 
@@ -295,8 +289,7 @@ class ProductController extends Controller
 
                 // Retrieve current session cart or initialize an empty array
                 $cart = session()->get('cart', []);
-                // dd($cart);
-                // dd(session()->get('cart'));
+
 
                 // Check if the product already exists in the cart
                 if (isset($cart[$productId])) {
@@ -311,27 +304,9 @@ class ProductController extends Controller
                 // Store the updated cart back in the session
                 session()->put('cart', $cart);
                 // dd($cart);
-                $total = array_sum(array_column($cart, 'quantity'));
-                //  session()->save();  // Save the session (optional, usually automatic)
-                // response
-                // dd($total);
-
-                // $total_q = [];
-                // foreach ($cart as $carts) {
-                //     $total_q[] = $carts['quantity'];
-                // }
-                // $total = array_sum($total_q);
-                return response()->json([
-                    'message' => 'Cart updated!',
-                    'cart' => $cart,
-                    'total' => $total
-                ]);
-
-                //end response
-
-
+                session()->save();  // Save the session (optional, usually automatic)
+                
                 return response()->json(['message' => 'Item added to cart in session', 'cart' => $cart]);
-
                 // dd($cart);
                 // $request->session()->put('cart', $cart);
                 // echo  $request->session()->get('cart');
@@ -404,7 +379,6 @@ class ProductController extends Controller
     }
     public function cartList()
     {
-        // dd(1);
         // $cartId = cart::get();
         // dd($cartId);
         // if (!Auth::check()) {
@@ -421,24 +395,19 @@ class ProductController extends Controller
                 ->select('products.id as prodid', 'products.name', 'products.desc', 'products.image', 'products.price', 'cart.quantity', 'cart.id as cartid') // Add more fields as needed
                 ->where('cart.userid', $userId)
                 ->get();
-            // ->toArray();
         } else {
 
             // Fetch cart data from session for guest users
             $datas = session('cart', []); // Default to an empty array if no cart session exists
-            //  dd($datas);
+            // dd($datas);
             // Exit
 
             // Example of updating session cart data to include additional fields
             foreach ($datas as $key => $item) {
                 //dd($key, $item);
-                //  dd($item);
-
                 $product = DB::table('products')->where('id', $item['prodid'])->first();
 
-                // $product = DB::table('products')->where('id', $item->prodid)->first();
-
-                //  dd($product);
+                //dd($product);
                 if ($product) {
                     $datas[$key] = [
                         'prodid' => $product->id,
@@ -451,13 +420,14 @@ class ProductController extends Controller
                     ];
                 }
             }
+
             // Update session with enriched data (optional if you want to save it)
             session()->put('cart', $datas);
         }
 
         // Example response (optional)
         //  return response()->json(['cart' => $datas]);
-        return view('frontend.cartlist', ['datas' => $datas]);
+        return view('frontend.cartlist',['datas' => $datas]);
         // return response()->json(['frontend.cartlist','cart' => $datas]);
         //return view(['frontend.cartlist','datas' => $datas]);
     }
@@ -482,7 +452,6 @@ class ProductController extends Controller
             $quantity = 1;
 
             if (Auth::check()) {
-
                 $userId = Auth::id();
                 $cartItem = Cart::where('userid', $userId)
                     ->where('prodid', $productId)
@@ -491,38 +460,25 @@ class ProductController extends Controller
                 if ($cartItem) {
                     $cartItem->quantity += $quantity;
                     $cartItem->save();
-                    $total = Cart::where('userId', auth()->user()->id)->sum('quantity');
-                    return response()->json([
-                        'message' => 'Quantity updated',
-                        'new_quantity' => $cartItem->quantity,
-                        'total' => $total
-                    ]);
-
-                    // return response()->json(['new_quantity1' => $cartItem->quantity]);
+                    return response()->json(['new_quantity' => $cartItem->quantity]);
                 }
-
             } else {
 
                 // dd(1);
-
                 $cart = session()->get('cart', []);
                 // dd($cart);
                 $cart[$productId]['quantity'] = ($cart[$productId]['quantity'] ?? 0) + $quantity;
                 session()->put('cart', $cart);
                 $cartd = session()->get('cart');
-
                 $total_q = [];
                 foreach ($cartd as $carts) {
                     $total_q[] = $carts['quantity'];
                 }
-
                 $total = array_sum($total_q);
                 return response()->json([
                     'new_quantity' => $cart[$productId]['quantity'],
                     'total' => $total
                 ]);
-
-                //  dd($cart);
             }
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
@@ -544,13 +500,7 @@ class ProductController extends Controller
                     if ($cartItem->quantity > 1) {
                         $cartItem->quantity -= 1;
                         $cartItem->save();
-                        $total = Cart::where('userId', auth()->user()->id)->sum('quantity');
-                        return response()->json([
-                            'message' => 'Quantity updated',
-                            'new_quantity' => $cartItem->quantity,
-                            'total' => $total
-                        ]);
-                        // return response()->json(['new_quantity' => $cartItem->quantity]);
+                        return response()->json(['new_quantity' => $cartItem->quantity]);
                     } else {
                         $cartItem->delete();
                         return response()->json(['new_quantity' => 0]);
@@ -562,8 +512,6 @@ class ProductController extends Controller
                     if ($cart[$productId]['quantity'] > 1) {
                         $cart[$productId]['quantity'] -= 1;
                         session()->put('cart', $cart);
-
-
                         $total_q = [];
                         foreach ($cart as $carts) {
                             $total_q[] = $carts['quantity'];
@@ -573,7 +521,6 @@ class ProductController extends Controller
                             'new_quantity' => $cart[$productId]['quantity'],
                             'total' => $total
                         ]);
-
                         // return response()->json(['new_quantity' => $cart[$productId]['quantity']]);
                     } else {
                         unset($cart[$productId]);
@@ -677,7 +624,7 @@ class ProductController extends Controller
             ->where('cart.userid', $userId)
             ->sum('products.price');
 
-        // dd($total);
+            // dd($total);
 
         //dd($datas);
 
@@ -898,24 +845,24 @@ class ProductController extends Controller
         session(['cart' => $updatedCart]);
         return redirect()->back()->with('message', 'Session data cleared successfully.');
     }
-
+    
     public function increment(Request $request)
     {
 
-        //dd($request);
+         //dd($request);
         if (Auth::check()) {
 
             //$productId = $request->input('id');
+           
+           // $cart = Cart::where('userid', Auth::id())->where('id', $request->id)->first();
 
-            // $cart = Cart::where('userid', Auth::id())->where('id', $request->id)->first();
+              $cart = Cart::find($request->prodid);
 
-            $cart = Cart::find($request->prodid);
-
-            // $cart = Cart::where ();
+           // $cart = Cart::where ();
             //  dd($request->prodid);
             //    dd($cart);
             if ($cart) {
-                // dd($cart);
+               // dd($cart);
                 $cart->quantity += 1;
                 $cart->save();
             }
@@ -943,37 +890,39 @@ class ProductController extends Controller
     // Decrement the quantity of a product in the session
     public function decrement(Request $request)
     {
-
+      
         if (Auth::check()) {
             // Find the cart item for the logged-in user
             $cart = Cart::where('userid', Auth::id())->where('id', $request->prodid)->first();
             //  dd($cart);
-
+    
             if ($cart && $cart->quantity > 1) {
                 $cart->quantity -= 1;
                 $cart->save();
-
+    
                 return response()->json([
                     'success' => true,
                     'quantity' => $cart->quantity,
                     'message' => 'Quantity updated in database'
                 ]);
             }
-        } else {
+        }else{
 
-            $productId = $request->input('prodid');
-            // dd($productId);
-            $cart = session('cart', []);
+        $productId = $request->input('prodid');
+        // dd($productId);
+        $cart = session('cart', []);
 
-            if (isset($cart[$productId]) && $cart[$productId]['quantity'] > 1) {
-                $cart[$productId]['quantity'] -= 1; // Decrement quantity
-            } elseif (isset($cart[$productId]) && $cart[$productId]['quantity'] === 1) {
-                // unset($cart[$productId]); // Remove the item if quantity becomes 0
-            }
-
-            session(['cart' => $cart]); // Update session
-            return response()->json(['success' => true, 'cart' => $cart]);
+        if (isset($cart[$productId]) && $cart[$productId]['quantity'] > 1) {
+            $cart[$productId]['quantity'] -= 1; // Decrement quantity
+        } elseif (isset($cart[$productId]) && $cart[$productId]['quantity'] === 1) {
+            // unset($cart[$productId]); // Remove the item if quantity becomes 0
         }
+
+        session(['cart' => $cart]); // Update session
+        return response()->json(['success' => true, 'cart' => $cart]);
+
+    }
+
     }
     // public function incrementSession(Request $request)
     // {

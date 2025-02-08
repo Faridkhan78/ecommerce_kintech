@@ -147,6 +147,7 @@ Route::any('/session-delete', [ProductController::class,'delete_session'])->name
 
 // Route::post('/cart/decrement-session', [ProductController::class, 'decrementSession'])->name('cart.decrement.session');
 
+//For Both Login and Session
 Route::post('/cart/increment', [ProductController::class, 'increment'])->name('cart.increment');
 Route::post('/cart/decrement', [ProductController::class, 'decrement'])->name('cart.decrement');
 

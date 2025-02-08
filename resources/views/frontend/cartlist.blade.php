@@ -8,6 +8,7 @@
         <li class="breadcrumb-item active text-white">Cart</li>
     </ol>
 </div>
+
 <!-- Cart Page Start -->
 <div class="container-fluid py-5">
     <div class="container py-5">
@@ -61,7 +62,7 @@
                                                 @else
                                                 <img src="{{ asset('product_images') }}" alt="Default Image" class="img-fluid">
                                                 @endif   
-
+                                                  {{-- @dd($data['image']); --}}
                                         </div>
                                     </th>
                                     <td>
@@ -109,7 +110,8 @@
                                             
                                             <button type="submit" class="btn btn-md rounded-circle bg-light border mt-4">
                                                 <i class="fa fa-times text-danger"></i>    
-                                            </button></td>
+                                            </button>
+                                        </td>
                                     </form>
 
                                     {{-- <form method="post" action="{{ route('delete_cartlist', $data->id) }}">
@@ -205,7 +207,8 @@
                                     </button> 
                                     {{-- <a href="{{ route('delete_cartlist',['id'=>$data->prodid])}}"class="btn btn-danger" >x</a> --}}
                                 </td>   
-                              </form>  
+                              </form>
+                                
                               {{-- @dd($data->cartid)  --}}
                               {{-- @dd($data->prodid)         --}}
 
@@ -247,6 +250,7 @@
                              <p class="mb-0">
                                  {{-- <b>{{ $datas->sum(fn($data) => $data->quantity * $data->price) }}</b>  --}}
                                  <b>{{ $totalPrice }}</b>
+                                 {{-- @dd($totalPrice) --}}
                             </p>  
 
                         </div>                    

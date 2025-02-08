@@ -10,7 +10,6 @@
 </div>
 <!-- Single Page Header End -->
 
-
 <!-- Checkout Page Start -->
 <div class="container-fluid py-5">
     <div class="container py-5">
@@ -109,7 +108,8 @@
                                         </div>
                                     </th> --}}
                                     {{-- <td class="py-5">Awesome Brocoli</td> --}}
-                                    <td class="py-5">{{ $total }}</td>
+                                    <td class="py-5">{{$total}}</td>
+                                    {{-- @dd($total) --}}
                                     <td class="py-5">0 </td>
                                     <td class="py-5">100</td>
                                     <td class="py-5">{{ $total + 100 }}</td>

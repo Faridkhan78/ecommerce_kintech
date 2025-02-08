@@ -83,6 +83,7 @@
 
                                 {{-- <td>{{ $item->quantity * $item->product->price }}</td> --}}
                                 <p class="mb-0 mt-4">{{ $totalPrice }}</p>
+                                
                             </td>
                             {{-- <form method="post" action="{{ route('delete_cartlist', $data->id) }}">
                                 {{-- <form> --}}

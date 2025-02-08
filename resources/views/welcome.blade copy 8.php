@@ -524,68 +524,65 @@ if (auth()->check()) {
                         <div class="row g-4">
                             <div class="col-lg-12">
                                 <div class="row g-4">
-                                    @if (!Auth::check())
-                                        @foreach ($products as $product)
-                                            {{-- @dd($product); --}}
-                                            <div class="col-md-6 col-lg-4 col-xl-3">
-                                                <div class="rounded position-relative fruite-item">
-                                                    <div class="fruite-img">
-                                                        <img src="{{ asset('product_images/' . $product->image) }}"
-                                                            alt="" height="100">
+                                    @foreach ($products as $product)
+                                        {{-- @dd($product); --}}
+                                        <div class="col-md-6 col-lg-4 col-xl-3">
+                                            <div class="rounded position-relative fruite-item">
+                                                <div class="fruite-img">
+                                                    <img src="{{ asset('product_images/' . $product->image) }}"
+                                                        alt="" height="100">
+                                                </div>
+                                                {{-- @dd($product->image); --}}
+                                                <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                                    style="top: 10px; left: 10px;">{{ $product->name }}</div>
+                                                <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                    <h4>{{ $product->desc }}</h4>
+                                                    <p>Available Quantity:</p>
+                                                    <p>{{ $product->qty }}</p>
+                                                    <div class="d-flex justify-content-between flex-lg-wrap">
+                                                        <p class="text-dark fs-5 fw-bold mb-0">{{ $product->price }}
+                                                        </p>
                                                     </div>
-                                                    {{-- @dd($product->image); --}}
-                                                    <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                                                        style="top: 10px; left: 10px;">{{ $product->name }}</div>
-                                                    <div
-                                                        class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                        <h4>{{ $product->desc }}</h4>
-                                                        <p>Available Quantity:</p>
-                                                        <p>{{ $product->qty }}</p>
-                                                        <div class="d-flex justify-content-between flex-lg-wrap">
-                                                            <p class="text-dark fs-5 fw-bold mb-0">
-                                                                {{ $product->price }}
-                                                            </p>
-                                                        </div>
-                                                        <div class="product-card">
+                                                    <div class="product-card">
 
-                                                            @php
-                                                                $cartItemIds = session()->get('cart', []); // Get the cart or an empty array
-                                                                $cartItemIds = collect($cartItemIds)
-                                                                    ->keyBy('prodid')
+                                                        @php
+                                                            $cartItemIds = session()->get('cart', []); // Get the cart or an empty array
+                                                            $cartItemIds = collect($cartItemIds)
+                                                                ->keyBy('prodid')
 
-                                                                    ->toArray(); // Convert to collection and pluck 'prodid'
-                                                                //dd($cartItemIds);
-                                                            @endphp
-                                                            {{-- @dd($cartItemIds); --}}
-                                                            {{-- @if (in_array($product->id, $cartItemIds)) --}}
-                                                            @if (array_key_exists($product->id, $cartItemIds))
-                                                                {{-- @dd($product->id); --}}
-                                                                <div class="d-flex align-items-center"
-                                                                    id="buttons-{{ $product->id }}">
-                                                                    <!-- Decrement Button -->
-                                                                    <button
-                                                                        class="btn btn-outline-danger btn-sm decrease-qty"
-                                                                        data-id="{{ $product->id }}">-</button>
-                                                                    <!-- Quantity Input -->
-                                                                    <input type="text"
-                                                                        class="form-control qty-input mx-2"
-                                                                        id="qty-{{ $product->id }}"
-                                                                        value="{{ $cartItemIds[$product->id]['quantity'] ?? 1 }}"
-                                                                        min="1"
-                                                                        style="width: 60px; text-align: center;">
-                                                                    <!-- Increment Button -->
-                                                                    <button
-                                                                        class="btn btn-outline-success btn-sm increase-qty"
-                                                                        data-id="{{ $product->id }}">+</button>
-                                                                </div>
-                                                            @else
-                                                                <div>
-                                                                    {{-- <form action="{{ route('addtocart') }}" method="POST"
+                                                                ->toArray(); // Convert to collection and pluck 'prodid'
+                                                            //dd($cartItemIds);
+                                                        @endphp
+                                                        {{-- @dd($cartItemIds); --}}
+                                                        {{-- @if (in_array($product->id, $cartItemIds)) --}}
+                                                        @if (array_key_exists($product->id, $cartItemIds))
+                                                            {{-- @dd($product->id); --}}
+                                                            <div class="d-flex align-items-center"
+                                                                id="buttons-{{ $product->id }}">
+                                                                <!-- Decrement Button -->
+                                                                <button
+                                                                    class="btn btn-outline-danger btn-sm decrease-qty"
+                                                                    data-id="{{ $product->id }}">-</button>
+                                                                <!-- Quantity Input -->
+                                                                <input type="text"
+                                                                    class="form-control qty-input mx-2"
+                                                                    id="qty-{{ $product->id }}"
+                                                                    value="{{ $cartItemIds[$product->id]['quantity'] ?? 1 }}"
+                                                                    min="1"
+                                                                    style="width: 60px; text-align: center;">
+                                                                <!-- Increment Button -->
+                                                                <button
+                                                                    class="btn btn-outline-success btn-sm increase-qty"
+                                                                    data-id="{{ $product->id }}">+</button>
+                                                            </div>
+                                                        @else
+                                                            <div>
+                                                                {{-- <form action="{{ route('addtocart') }}" method="POST"
                                                                 id="">
                                                             <input type="hidden" name="prodid"
                                                                     value="{{ $product->id }}">
                                                                 @csrf --}}
-                                                                    {{-- <button
+                                                                {{-- <button
                                                                     class="btn border border-secondary add-btn rounded-pill px-3 text-primary add-to-cart"
                                                                     data-id="{{ $product->id }}" name="submit"
                                                                     id="ajaxForm">
@@ -594,109 +591,23 @@ if (auth()->check()) {
                                                                     to Cart
                                                                 </button> --}}
 
-                                                                    <button id="add-to-cart-btn-{{ $product->id }}"
-                                                                        class="btn add-to-cart btn-primary qty-input"
-                                                                        data-product-id="{{ $product->id }}">
-                                                                        Add to Cart
-                                                                    </button>
+                                                                <button id="add-to-cart-btn-{{ $product->id }}"
+                                                                    class="btn add-to-cart btn-primary qty-input"
+                                                                    data-product-id="{{ $product->id }}">
+                                                                    Add to Cart
+                                                                </button>
 
-                                                                    <div id="product-controls-{{ $product->id }}">
-                                                                    </div>
+                                                                <div id="product-controls-{{ $product->id }}"></div>
 
-                                                                    {{-- </form> --}}
-                                                                    {{-- id="qty-{{ $product->id }}" --}}
-                                                                </div>
-                                                            @endif
-                                                        </div>
+                                                                {{-- </form> --}}
+                                                                {{-- id="qty-{{ $product->id }}" --}}
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
-                                        @endforeach
-                                        {{-- if user login --}}
-                                    @else
-                                        @foreach ($products as $product)
-                                            {{-- @dd($product); --}}
-                                            <div class="col-md-6 col-lg-4 col-xl-3">
-                                                <div class="rounded position-relative fruite-item">
-                                                    <div class="fruite-img">
-                                                        <img src="{{ asset('product_images/' . $product->image) }}"
-                                                            alt="" height="100">
-                                                    </div>
-                                                    {{-- @dd($product->image); --}}
-                                                    <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                                                        style="top: 10px; left: 10px;">{{ $product->name }}</div>
-                                                    <div
-                                                        class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                        <h4>{{ $product->desc }}</h4>
-                                                        <p>Available Quantity:</p>
-                                                        <p>{{ $product->qty }}</p>
-                                                        <div class="d-flex justify-content-between flex-lg-wrap">
-                                                            <p class="text-dark fs-5 fw-bold mb-0">
-                                                                {{ $product->price }}
-                                                            </p>
-                                                        </div>
-                                                        <div class="product-card">
-
-                                                            @php
-                                                                //$cartItemIds = session()->get('cart', []); // Get the cart or an empty array
-                                                                // $cartItemIds = cart::get();
-                                                                $userId = Auth::id();
-                                                                $productId = $product->id; // Get the product id
-                                                                $cartItemIds = \App\Models\Cart::get();
-                                                                $cartItemIds = collect($cartItemIds)
-                                                                    ->keyBy('prodid')
-                                                                    ->toArray(); // Convert to collection and pluck 'prodid'
-                                                                // dd($cartItemIds);
-                                                            @endphp
-                                                            {{-- @dd($cartItemIds); --}}
-                                                            {{-- @if (in_array($product->id, $cartItemIds)) --}}
-                                                            @if ($product->id)
-                                                                {{-- @dd($product); --}}
-                                                                <div class="d-flex align-items-center"
-                                                                    id="buttons-{{ $product->id }}">
-                                                                    <!-- Decrement Button -->
-                                                                    <button
-                                                                        class="btn btn-outline-danger btn-sm decrease-qty"
-                                                                        data-id="{{ $product->id }}">-</button>
-                                                                    <!-- Quantity Input -->
-                                                                    <input type="text"
-                                                                        class="form-control qty-input mx-2"
-                                                                        id="qty-{{ $product->id }}"
-                                                                        value="{{ $cartItemIds[$product->id]['quantity'] ?? 1 }}"
-                                                                         {{-- value="{{ $cartItemIds[$product->qty]['qty'] ?? 1 }}" --}}
-                                                                         {{-- value="{{[$product->id]['quantity'] ?? 1}}" --}}
-                                                                         {{-- value="{{[$product->id]['quantity'] ?? 1}}"     --}}
-                                                                         {{-- value="{{ optional($product->where('id', $product->id)->first())->quantity ?? 1 }}"  --}}
-                                                                        min="1"
-                                                                        style="width: 60px; text-align: center;">
-                                                                    <!-- Increment Button -->
-                                                                    
-                                                                    <button
-                                                                        class="btn btn-outline-success btn-sm increase-qty"
-                                                                        data-id="{{ $product->id }}">+</button>
-                                                                </div>
-                                                                {{-- @dd($product) --}}
-                                                            @else
-                                                                <div>
-                                                                    <button id="add-to-cart-btn-{{ $product->id }}"
-                                                                        class="btn add-to-cart btn-primary qty-input"
-                                                                        data-product-id="{{ $product->id }}">
-                                                                        Add to Cart
-                                                                    </button>
-
-                                                                    <div id="product-controls-{{ $product->id }}">
-                                                                    </div>
-
-                                                                    {{-- </form> --}}
-                                                                    {{-- id="qty-{{ $product->id }}" --}}
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    @endif
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -1134,7 +1045,7 @@ if (auth()->check()) {
             const productId = $(this).data('product-id');
             // alert('Product');
             $.ajax({
-                url: "{{ route('addtocart') }}",
+                url: "{{ route('addtocart')}}",
                 // alert(url);
                 method: "POST",
                 data: {
@@ -1185,9 +1096,9 @@ if (auth()->check()) {
                     }
 
                     // without load A
-                    // if (response.success) {
+                                    // if (response.success) {
                     $(`#add-to-cart-btn-${productId}`).hide();
-
+                    
                     $(`#product-controls-${productId}`).html(`
                     <div class="d-flex align-items-center">
                         <button class="btn btn-outline-danger btn-sm decrease-qty" data-id="${productId}">-</button>

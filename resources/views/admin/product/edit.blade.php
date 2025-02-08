@@ -6,15 +6,16 @@
             <div class="col-md-8 mt-5">
                 <h1>Edit Customer</h1>
                 {{-- <form action="{{url('update_user'}}" enctype="multipart/form-data" method="POST"> --}}
-                <form  action="{{url('update-user', $user->id)}}"  enctype="multipart/form-data" method="POST">
+                <form  action="{{url('update-product', $product->id)}}"  enctype="multipart/form-data" method="POST">
                     @csrf
-                    <input type="text" value="{{ $user->name}}"  name="cname" class="form-control" placeholder="Name"><br>
-                    <input type="email" value="{{ $user->email}}" name="cemail" class="form-control" placeholder="Email"><br>
-                    <input type="password" value="{{ $user->password}}" name="cpass" class="form-control" placeholder="Password"><br>
-                    <input type="number" value="{{ $user->number}}" name="cnum" class="form-control" placeholder="Number"><br>
-                    <input type="text" value="{{ $user->address}}" name="caddress" class="form-control" placeholder="Address"><br>
-                    <img src="{{asset($user->image)}}" alt=""/>
-                    <input type="file" name="cimg" class="form-control" placeholder="Image"><br>
+                    <input type="text" value="{{ $product->name}}"  name="name" class="form-control" placeholder="Name"><br>
+                    <input type="text" value="{{ $product->desc}}" name="desc" class="form-control" placeholder="Description"><br>
+                    <input type="number" value="{{ $product->price}}" name="price" class="form-control" placeholder="Price"><br>
+                    <input type="number" value="{{ $product->qty}}" name="qty" class="form-control" placeholder="Quantity"><br>
+                    {{-- <input type="text" value="{{ $product->address}}" name="caddress" class="form-control" placeholder="Address"><br> --}}
+                    <img src="{{asset('product_images/'.$product->image)}}" alt=""/>
+                    {{-- @dd($product->image) --}}
+                    <input type="file" name="image" class="form-control" placeholder="Image"><br>
                     <input type="submit" value="Submit" class="btn btn-primary">
                 </form>
             </div>
