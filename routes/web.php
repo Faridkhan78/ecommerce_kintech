@@ -138,7 +138,11 @@ Route::any('/orderplace', [ProductController::class, 'orderPlace'])->name('order
 Route::any('/myorder', [ProductController::class, 'myOrder'])->name('myorder');
 
 // session delete cartlist
-Route::any('/session-delete', [ProductController::class,'delete_session'])->name('session.delete');
+Route::post('/session-delete', [ProductController::class,'delete_session'])->name('session.delete');
+
+
+// Route::post('/session-delete', [ProductController::class,'deleteSessionItem'])->name('session.delete');
+
 //Route::get('/removecart/{{id}}', [ProductController::class, 'removeCart'])->name('removecart');
 
 //sesssion increment and decrement session

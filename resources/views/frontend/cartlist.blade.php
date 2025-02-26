@@ -46,7 +46,7 @@
                          {{-- // @dd(cart) --}}
                             {{-- @foreach ($datas as $data) --}}
                                   {{-- @dd($data)            --}}
-                                <tr>
+                                <tr id="cart_row_{{ $data['prodid'] }}">
                                     <th scope="row">
                                         <div class="d-flex align-items-center">
                                             {{-- <img src="{{ asset('user/img/vegetable-item-3.png') }}" --}}
@@ -65,15 +65,17 @@
                                                   {{-- @dd($data['image']); --}}
                                         </div>
                                     </th>
+                                    
                                     <td>
                                         <p class="mb-0 mt-4">{{ $data['name']}}</p>
                                     </td>
+
                                     <td>
                                         <p class="mb-0 mt-4">{{ $data['price'] }}</p>
                                     </td>
-                                    <td>
 
-                                        {{-- @dd($data) --}}
+                                    <td>
+                                                                                {{-- @dd($data) --}}
                                         <div class="input-group quantity mt-4" style="width: 100px;">
                                             <div class="input-group-btn">
                                                 <button class="btn btn-sm btn-minus rounded-circle bg-light border"
@@ -98,33 +100,81 @@
                                     <td>
                                         {{-- <td>{{ $item->quantity * $item->product->price }}</td> --}}
                                         <p class="mb-0 mt-4">{{ $totalPrice }}</p>
+
                                     </td>
                                    {{-- <td><a href="/removecart{{$data->id}}"class="btn btn-warning" >Remove From Cart</a></td>  --}}
                                     {{-- <td><a href="{{ route('removecart', $data->id)}}" class="btn btn-warning" >Remove From Cart</a></td>   --}}
                                     
-                                    <form action="{{ route('session.delete') }}" method="POST">
+
+                                    {{-- // start  --}}
+                                    {{-- <form action="{{ route('session.delete') }}" method="POST">
                                         @csrf
                                         <td>
                                             {{-- @dd($data) --}}
-                                            <input type="hidden" name="id" value="{{ $data['prodid']}}">
+                                            {{-- <input type="hidden" name="id" value="{{ $data['prodid']}}">
                                             
-                                            <button type="submit" class="btn btn-md rounded-circle bg-light border mt-4">
+                                            <button type="submit" class="btn btn-md rounded-circle bg-light border mt-4 delete-cart">
                                                 <i class="fa fa-times text-danger"></i>    
                                             </button>
                                         </td>
-                                    </form>
+                                    </form>  --}} 
+
+                                       {{-- end --}}
+
+                                            {{-- session delete --}}
+                                            
+                                       {{-- <form id="cart_row_{{ $data['prodid'] }}">
+                                        {{-- <td>{{ $data['name'] }}</td>
+                                        <td>{{ $data['price'] }}</td> --}}
+                                        {{-- @csrf --}}
+                                        {{-- <td> --}}
+                                            {{-- <form class="delete-cart-form" data-url="{{ route('session.delete') }}" method="POST"> --}}
+                                                {{-- @csrf --}}
+                                                {{-- <input type="hidden" name="id" value="{{ $data['prodid'] }}">
+
+                                                <button type="button" class="btn btn-md rounded-circle bg-light border mt-4 delete-cart" data-prodid="{{ $data['prodid'] }}">
+                                                    <i class="fa fa-times text-danger"></i>    
+                                                </button> --}}
+
+                                            {{-- </form> --}}
+
+                                        {{-- </td> --}}
+                                       {{-- </form>  --}}
+
+                                       {{-- <form id="cart_row_{{ $data['prodid'] }}" data-id="{{ $data['prodid'] }}"  class="delete-cart-form" action="{{ route('session.delete') }}" method="POST"> --}}
+                                             {{-- @csrf --}}
+                                             {{-- @method('DELETE') --}}
+                                             <td>
+                                            <input type="hidden" name="id" value="{{ $data['prodid'] }}">
+
+                                            <button type="submit" class="btn btn-md rounded-circle bg-light border mt-4 delete-cart" data-id="{{ $data['prodid'] }}">
+                                                <i class="fa fa-times text-danger"></i>    
+                                            </button>
+                                             </td>
+                                        {{-- </form> --}}
+                                    
+
+                                    {{-- <form id="cart_row_{{ $data['prodid'] }}">
+                                        {{-- <td>{{ $data['product_name'] }}</td> --}}
+                                        {{-- <td>
+                                            <button type="button" class="btn btn-md rounded-circle bg-light border mt-4 delete-cart" 
+                                                data-id="{{ $data['prodid'] }}">
+                                                <i class="fa fa-times text-danger"></i>    
+                                            </button>
+                                        </td> --}}
+                                    {{-- </form> --}} 
 
                                     {{-- <form method="post" action="{{ route('delete_cartlist', $data->id) }}">
                                         {{-- <form> --}}
                                          {{-- @csrf
                                         @method('DELETE') <!-- Spoof DELETE method -->
-                                        <td>
-                                            <button type="submit"
+                                        <td> --}}
+                                            {{-- <button type="submit"
                                                 class="btn btn-md rounded-circle bg-light border mt-4">
                                                 <i class="fa fa-times text-danger"></i>
-                                            </button>
-                                        </td> --}}
-                                    {{-- </form>   --}}
+                                            </button> --}}
+                                        {{-- </td>  --}}
+                                     {{-- </form>    --}}
 
                                     {{-- <form method="post" action="">
                                     <td>
@@ -179,11 +229,11 @@
                                         value="{{$data->quantity}}">
                                     <div class="input-group-btn">
                                         <button class="btn btn-sm btn-plus rounded-circle bg-light border"
-                                         onclick="incrementSession({{ $data->cartid}})"
+                                        onclick="incrementSession({{ $data->cartid}})"
                                         >
                                             <i class="fa fa-plus"></i>
                                         </button>
-                                        {{-- @dd($data->prodid) --}}
+                                        {{-- @dd($data->cartid) --}}
                                     </div>
                                 </div>
                             </td> 
@@ -198,13 +248,18 @@
                                                         
                              <form method="post" action="{{ route('delete_cartlist',$data->cartid)}}"> 
                                 {{-- <form>  --}}
-                                  @csrf
-                                 @method('DELETE') <!-- Spoof DELETE method --> 
+                                 @csrf
+                                 @method('DELETE') 
                                 <td>
-                                     <button type="submit"
+                                     <button type="button"
                                         class="btn btn-md rounded-circle bg-light border mt-4">
                                         <i class="fa fa-times text-danger"></i>
                                     </button> 
+
+                                    {{-- <button type="button" class="btn btn-md rounded-circle bg-light border delete-cart"
+                                         data-prodid="{{ $data['prodid'] }}" data-url="{{ route('session.delete') }}">
+                                          <i class="fa fa-times text-danger"></i>
+                                    </button> --}}
                                     {{-- <a href="{{ route('delete_cartlist',['id'=>$data->prodid])}}"class="btn btn-danger" >x</a> --}}
                                 </td>   
                               </form>
@@ -272,22 +327,50 @@
 @include('frontend.footer')
 <script>
 function incrementSession(prodid) {
+    // dd(1);
+    // console.log(prodid);
     fetch("{{ route('cart.increment') }}", {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": "{{ csrf_token() }}",
             "Content-Type": "application/json",
         },
+
         body: JSON.stringify({ prodid: prodid }),
+
     })
         .then((response) => response.json())
+        // dd(response);
+
         .then((data) => {
             if (data.success) {
                 location.reload(); // Reload the page to update the quantity
             }
         })
+
         .catch((error) => console.error("Error:", error));
 }
+// function incrementSession(prodid) {
+//     fetch("{{ route('cart.increment') }}", {
+//         method: "POST",
+//         headers: {
+//             "X-CSRF-TOKEN": "{{ csrf_token() }}",
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ prodid: prodid }),
+//     })
+//     .then((response) => response.json())
+//     .then((data) => {
+//         if (data.success) {
+//             // Update the quantity dynamically without reloading
+//             let quantityElement = document.getElementById(`quantity-${prodid}`);
+//             if (quantityElement) {
+//                 quantityElement.innerText = data.new_quantity; // Update quantity
+//             }
+//         }
+//     })
+//     .catch((error) => console.error("Error:", error));
+// }
 
 function decrementSession(prodid) {
     fetch("{{ route('cart.decrement') }}", {
@@ -364,6 +447,213 @@ function decrementSession(prodid) {
             });
         });
     });
+
+</script> --}}
+
+{{-- session deleting recores --}}
+
+{{-- "<script type='text/javascript'>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+  </script>"; --}}
+
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+{{-- // original --}}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+ <script>
+    $(document).ready(function() {
+
+     $(document).on('click','.delete-cart', function(event) {
+            // event.preventDefault(); 
+           
+            let prodId = $(this).data('id'); // Get product ID
+                // alert(prodId);
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('session.delete') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: prodId
+                    },
+                    success: function(response) {
+                            //  alert(response);
+                        if (response) {
+                          $('#cart_row_' + prodId).remove(); // Remove row from UI   
+
+                            //  console.log('removeItem',$removedItem)
+                            // $(id).remove();
+                        } else {
+                            alert("Failed to delete item1.");
+                        }
+                    },
+                    error: function(xhr) {
+                        alert("Something went wrong.");
+                    }
+
+                });
+        });
+    });
+    // $(document).ready(function() {
+    // $(document).on('click', '.delete-cart', function(event) {
+    //     event.preventDefault();
+    //     let prodId = $(this).data('prodid'); 
+    //     // console.log(prodId);
+    //     alert(1);
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "{{ route('session.delete') }}", 
+    //         data: {
+    //             _token: "{{ csrf_token() }}", 
+    //             id: prodId
+    //         },
+    //         success: function(response) {
+    //             if (response.success) {
+    //                 $('#cart_row_' + prodId).fadeOut("slow", function() { 
+    //                     $(this).remove(); 
+    //                 });
+    //             } else {
+    //                 alert("Failed to delete item.");
+    //             }
+    //         },
+    //         error: function(xhr) {
+    //             console.error("Error:", xhr.responseText); // Debugging
+    //             alert("Something went wrong.");
+    //         }
+    //     });
+    // });
+// });
+
+    // $(document).ready(function() {
+    //     $(document).on('click', '.delete-cart', function(event) {
+    //         event.preventDefault(); // Prevent page reload
+
+    //         let prodId = $(this).data('prodid'); // Get product ID
+    //         let url = "{{ route('session.delete') }}"; // Route to delete item
+
+    //         $.ajax({
+    //             url: url,
+    //             type: "POST",
+    //             data: {
+    //                 _token: "{{ csrf_token() }}",
+    //                 id: prodId
+    //             },
+    //             success: function(response) {
+    //                 if (response.success) {
+    //                     // Remove row smoothly without page refresh
+    //                     $("#cart_row_" + prodId).fadeOut("slow", function() {
+    //                         $(this).remove();
+    //                     });
+    //                 } else {
+    //                     alert("Failed to delete item.");
+    //                 }
+    //             },
+    //             error: function(xhr) {
+    //                 alert("Something went wrong.");
+    //             }
+    //         });
+    //     });
+    // });
+</script>
+{{-- end original --}}
+{{-- <form id="cartForm">
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="id" id="prodId" value="">
+</form> --}}
+
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(".delete-btn").on("click", function() {
+            var prodId = $(this).data("prodid"); // Get product ID from button data
+            $("#prodId").val(prodId); // Set product ID in hidden input
+
+            $.ajax({
+                url: "your-delete-url-here", // Replace with your actual delete URL
+                type: "POST",
+                data: $("#cartForm").serialize(), // Serialize form data
+                success: function(response) {
+                    if (response.success) {
+                        $("#cart_row_" + prodId).remove(); // Remove row from UI
+                    } else {
+                        alert("Failed to delete item.");
+                    }
+                },
+                error: function(xhr) {
+                    alert("Something went wrong.");
+                }
+            });
+        });
+    });
+</script> --}}
+
+{{-- <script>
+    $(document).ready(function() {
+    $('.delete-cart').on('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        let form = $(this);
+        let prodId = form.find('input[name="id"]').val(); // Get product ID
+        let url = form.data('url'); // Get AJAX URL
+        let token = $('meta[name="csrf-token"]').attr('content'); // CSRF token (ensure it's in <head>)
+
+        if (confirm("Are you sure you want to remove this item?")) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    _token: token,
+                    id: prodId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#cart_row_' + prodId).remove(); // Remove the row dynamically
+                    } else {
+                        alert("Failed to delete item.");
+                    }
+                },
+                error: function(xhr) {
+                    alert("Something went wrong.");
+                }
+            });
+        }
+    });
+});
+
+</script> --}}
+{{-- <script>
+$(document).ready(function () {
+    $(document).on('submit', '.delete-cart-form', function (event) {
+        event.preventDefault(); // Prevent form submission
+        
+        let form = $(this);
+        let prodId = form.find('input[name="id"]').val(); // Get product ID
+        alert(prodId);  // undefined
+        let url = form.attr('action'); // Get form action URL
+        
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: form.serialize(), // Serialize form data including CSRF token
+            // alert(data);
+            success: function (response) {
+                // alert(response);
+                if (response.success) {
+                    $('#cart_row_' + prodId).fadeOut(500, function () {
+                        $(this).remove(); // Remove row from UI
+                    });
+                } else {
+                    alert("Failed to delete item.");
+                }
+            },
+            error: function () {
+                alert("Something went wrong.");
+            }
+        });
+    });
+});
 
 </script> --}}
 

@@ -1135,7 +1135,7 @@ if (auth()->check()) {
         $(document).on('click', '.add-to-cart', function(e) {
             e.preventDefault();
             const productId = $(this).data('product-id');
-            // alert('productId');
+            // alert('Product');
             $.ajax({
                 url: "{{ route('addtocart') }}",
                 // alert(url);
@@ -1150,8 +1150,6 @@ if (auth()->check()) {
                 // alert('Product');
                 success: function(response) {
                     // dd(response)
-                    // alert(response);
-                    // console.log(response);
 
                     // $(`#qty-${productId}`).val(response.new_quantity);
                     // $('#shop_count').text(response.total);
@@ -1178,20 +1176,12 @@ if (auth()->check()) {
                     //     $(`#product-controls-${productId}`).empty();
                     // }
                     if (response) {
-                    // alert(response.total);
                         if (response.new_quantity <= 0) {
-                            // alert(response.new_quantity)
-                            // if (response.new_quantity <= undefined) {
                             $(`#add-to-cart-btn-${productId}`).show();
                             $(`#product-controls-${productId}`).empty();
                         }
                         $('#shop_count').text(response.total);
-                        //  alert(1);
-                        //  alert(response.total)
-                        
-
                         $(`#qty-${productId}`).val(response.new_quantity);
-                        // alert(1);
                     } else {
                         $(`#add-to-cart-btn-${productId}`).show();
                         $(`#product-controls-${productId}`).empty();
@@ -1316,9 +1306,8 @@ if (auth()->check()) {
 
 
 {{-- button increment + and - decrement  --}}
-
 <script>
-    $(document).on('click','.increase-qty', function() {
+    $(document).on('click', '.increase-qty', function() {
         // e.preventDefault();
         const productId = $(this).data('id');
 

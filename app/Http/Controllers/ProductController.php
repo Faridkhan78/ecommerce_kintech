@@ -168,6 +168,9 @@ class ProductController extends Controller
     public function addToCart(Request $request)
     {
         //  dd(1);
+        // dd($request->all());
+        // product_id 
+        // quantity
 
         try {
             // dd($request->all());
@@ -175,9 +178,9 @@ class ProductController extends Controller
             //$productId = $request->prodid;
 
             //  dd($productId);
-
+            // 28
             $quantity = $request->input('quantity');
-            // dd($quantity);      //  1
+            //dd($quantity);      //  1
             if (Auth::check()) {
 
                 $userId = Auth::id();
@@ -185,13 +188,13 @@ class ProductController extends Controller
                 $cartItem = Cart::where('userid', $userId)
                     ->where('prodid', $productId)
                     ->first();
-                // dd($cartItem);
-
+                //  dd($cartItem);   
+                //null
                 if ($cartItem) {
                     //$cartItem->quantity += $quantity;
 
-                    //dd($cartItem);
-                     
+                    // dd($cartItem);
+
                     // if($cartItem->quantity += $quantity){
                     //     // Decrement quantity
                     //    // $cartItem->quantity -= 1;
@@ -207,6 +210,9 @@ class ProductController extends Controller
                     //         $cartItem->delete();
                     //     }
                     // }
+                    // if($cartItem->quantity == 0){
+                    //     $cartItem->delete();
+                    // }
                     //  decrement quantity
 
                     // $cartItem->save();
@@ -218,15 +224,15 @@ class ProductController extends Controller
                     if ($cartItem->quantity += $quantity) {
                         // $cartItem->quantity += $quantity; // Increase quantity by $quantity
                         $cartItem->save(); // Save the updated quantity
+
                         $total = Cart::where('userId', auth()->user()->id)->sum('quantity');
-                        // dd($total);
-                        // $total = Cart::where('userId', auth()->id)->sum('quantity');
-                        // dd($total);
+
                         return response()->json([
                             'message' => 'Quantity updated',
                             'new_quantity' => $cartItem->quantity,
                             'total' => $total
                         ]);
+
                         // return response()->json(['message' => 'Quantity increased', 'new_quantity' => $cartItem->quantity]);
                     }
 
@@ -235,7 +241,17 @@ class ProductController extends Controller
                         $cartItem->quantity -= $quantity; // Decrease quantity by $quantity
                         if ($cartItem->quantity > 0) {
                             $cartItem->save(); // Save the updated quantity if it's still greater than 0
-                            return response()->json(['message' => 'Quantity decreased', 'new_quantity' => $cartItem->quantity]);
+
+                            $total = Cart::where('userId', auth()->user()->id)->sum('quantity');
+                            // dd($total);
+
+                            return response()->json([
+                                'message' => 'Quantity updated',
+                                'new_quantity' => $cartItem->quantity,
+                                'total' => $total
+                            ]);
+
+                            // return response()->json(['message' => 'Quantity decreased', 'new_quantity' => $cartItem->quantity]);
                         } else {
                             $cartItem->delete(); // Remove the cart item if the quantity reaches 0
                             return response()->json(['message' => 'Item removed from cart', 'new_quantity' => 0]);
@@ -247,6 +263,15 @@ class ProductController extends Controller
                         'userid' => $userId,
                         'prodid' => $productId,
                         'quantity' => $quantity,
+                    ]);
+
+                    $total = Cart::where('userid', auth()->user()->id)->sum('quantity');
+                    // dd($total);
+
+                    return response()->json([
+                        'message' => 'Quantity updated',
+                        'new_quantity' => 1,
+                        'total' => $total
                     ]);
 
                     //$cart->save();
@@ -290,6 +315,7 @@ class ProductController extends Controller
                 //     session()->put('cart', $cart); 
 
                 //     session()->save();
+
                 $productId = $request->input('product_id');
                 $quantity = $request->input('quantity', 1);
 
@@ -312,6 +338,7 @@ class ProductController extends Controller
                 session()->put('cart', $cart);
                 // dd($cart);
                 $total = array_sum(array_column($cart, 'quantity'));
+
                 //  session()->save();  // Save the session (optional, usually automatic)
                 // response
                 // dd($total);
@@ -500,7 +527,6 @@ class ProductController extends Controller
 
                     // return response()->json(['new_quantity1' => $cartItem->quantity]);
                 }
-
             } else {
 
                 // dd(1);
@@ -531,6 +557,7 @@ class ProductController extends Controller
 
     public  function decrementQuantity(Request $request)
     {
+        // dd($request->all);
         try {
             $productId = $request->input('prodid');
 
@@ -723,6 +750,13 @@ class ProductController extends Controller
     public function orderPlace(Request $req)
     {
 
+        $req->validate([
+            'address' => 'required|string|max:255',
+            'payment' => 'required|in:cash,card', // You can adjust allowed payment methods
+            'firstname' => 'required|string|max:100',
+            'lastname' => 'required|string|max:100',
+            'mobile' => 'required|digits:10', // Assuming a 10-digit mobile number
+        ]);
         //$userId = auth()->id(); // Retrieve the authenticated user's ID
 
         $userId = Auth::id();
@@ -766,42 +800,12 @@ class ProductController extends Controller
 
     public function delete_cartlist($id)
     {
-        // dd($id);   
+        //  dd($id);   
         $cart = Cart::find($id);
         //  $cart = Cart::findOrFail($id);
-        // dd($cart);
+        //  dd($cart);
         $cart->delete(); // Soft delete the record
-        //$cart = Cart::withTrashed()->find($id);
-        //dd($id);
 
-        // if ($cart) {
-        //     $cart->forceDelete(); // Permanently delete the record
-        // } else {
-        //     return response()->json(['error' => 'Cart not found'], 404);
-        // }
-        // $record = Cart::withTrashed()->find($id);
-
-        //     if(Auth::check()){
-        //         // $cart = Cart::where('userid', Auth::id())->where('id', $id)->first();
-        //         $cart = Cart::find($id);
-        //         if($cart){
-        //             $cart->delete();
-        //             return redirect()->route('cartlist')->with('success', 'Cart item deleted successfully!');
-
-        //     }
-        // }
-        //dd($id);
-        // $cart = Cart::where('userid', Auth::id())->where('id', $id)->first();
-        // $cart = Cart::find($id);         // $cart->where('userid', Auth::id())->
-        //$cart = Cart::find((int)$id);
-        // $cart->where('userid', Auth::id());
-        //dd(gettype($id));   
-        //$cart = Cart::where('id', $id)->firstOrFail();
-        // $cart = Cart::find($request->id);
-        //   dd($cart);
-        //  $cart->delete();
-        //dd($cart);
-        // return redirect()->route('cartlist')->with('success', 'Cart Item deleted successfully!');
         return redirect()->back();
         // if ($cart) {
         //     $cart->delete();
@@ -882,33 +886,80 @@ class ProductController extends Controller
     //     $totalAmount = $cartItems->sum('quantity * price');    
 
     public function delete_session(Request $request)
-    {
-        // session()->forget('cart'); // Specify the key to be deleted
+    {        // session()->forget('cart'); // Specify the key to be deleted
         $itemIdToRemove = $request->input('id');
         //dd($request->all());
-        // dd($itemIdToRemove);
+        // dd($itemIdToRemove);    // 22
         $cart = session('cart', []);
-        // dd($cart);             
+            // dd($cart);             
         $updatedCart = array_filter($cart, function ($item) use ($itemIdToRemove) {
             // dd($item['prodid'] != $itemIdToRemove);
             return $item['prodid'] != $itemIdToRemove;
         });
         // dd($updatedCart);
-
         session(['cart' => $updatedCart]);
+        // session(['cart' => array_values($updatedCart)]); // Re-index the array
+        session()->save(); // Ensure session is updated immediately
+        // dd(session('cart', []));
+        // return response()->json(['success' => true, 'message' => 'Item removed successfully']);
         return redirect()->back()->with('message', 'Session data cleared successfully.');
     }
+    public function delete_session11(Request $request)
+{
+    $cart = session()->get('cart', []);
+
+    if (isset($cart[$request->id])) {
+        unset($cart[$request->id]);
+        session()->put('cart', $cart);
+
+        return response()->json(['success' => true, 'message' => 'Item deleted successfully!']);
+    }
+
+    return response()->json(['success' => false, 'message' => 'Item not found.']);
+}
+//     public function delete_session(Request $request)
+// {
+//     $itemIdToRemove = $request->input('id');
+//     $cart = session('cart', []);
+
+//     // Remove the item with the matching prodid
+//     $updatedCart = array_filter($cart, function ($item) use ($itemIdToRemove) {
+//         return $item['prodid'] != $itemIdToRemove;
+//     });
+
+//     // Re-index the array to avoid gaps in keys
+//     session(['cart' => array_values($updatedCart)]);
+//     session()->save(); // Ensure session updates immediately
+
+//     // Return JSON response instead of redirect
+//     return response()->json(['success' => true, 'message' => 'Item removed successfully']);
+// }
+
+    public function deleteSessionItem(Request $request)
+    {
+        $itemIdToRemove = $request->input('id');
+        $cart = session('cart', []);
+
+        $updatedCart = array_filter($cart, function ($item) use ($itemIdToRemove) {
+            return $item['prodid'] != $itemIdToRemove;
+        });
+
+        session(['cart' => array_values($updatedCart)]); // Re-index the array
+
+        // return response()->json(['success' => true, 'message' => 'Item removed successfully']);
+
+        return redirect()->back()->with('message', 'Session data cleared successfully.');
+    }
+
 
     public function increment(Request $request)
     {
 
-        //dd($request);
+        //  dd($request);
         if (Auth::check()) {
-
             //$productId = $request->input('id');
 
             // $cart = Cart::where('userid', Auth::id())->where('id', $request->id)->first();
-
             $cart = Cart::find($request->prodid);
 
             // $cart = Cart::where ();
@@ -928,14 +979,17 @@ class ProductController extends Controller
         } else {
 
             $productId = $request->input('prodid');
-            // dd($productId);
+            //  dd($productId);
             $cart = session('cart', []);
+            // dd($cart);
 
             if (isset($cart[$productId])) {
                 $cart[$productId]['quantity'] += 1; // Increment quantity
             }
-
+            // dd($cart[$productId]);
             session(['cart' => $cart]); // Update session
+
+            // dd($cart);
             return response()->json(['success' => true, 'cart' => $cart]);
         }
     }
@@ -963,7 +1017,7 @@ class ProductController extends Controller
 
             $productId = $request->input('prodid');
             // dd($productId);
-            $cart = session('cart', []);
+            $cart = session('cart',[]);
 
             if (isset($cart[$productId]) && $cart[$productId]['quantity'] > 1) {
                 $cart[$productId]['quantity'] -= 1; // Decrement quantity
